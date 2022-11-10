@@ -1,0 +1,38 @@
+export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
+vagrant plugin install vagrant-winnfsd
+vagrant plugin install vagrant-vbguest
+vagrant plugin install vagrant-scp
+---
+
+vagrant up --debug &> vagrant.log
+vagrant up 2>&1 | tee vagrant.log
+
+vagrant global-status
+vagrant destroy master
+vagrant destroy node01
+vagrant destroy node02
+--
+vagrant ssh master
+--
+kubectl create deployment web --image=gcr.io/google-samples/hello-app:1.0
+kubectl expose deployment web --type=NodePort --port=8080
+kubectl get service web
+kubectl apply -f https://k8s.io/examples/service/networking/example-ingress.yaml
+
+
+
+# deployments
+kubectl apply -f https://k8s.io/examples/service/access/hello-application.yaml
+kubectl get deployments
+kubectl get deployments nginx-deployment
+
+# pods
+kubectl get pods
+
+# services 
+kubectl apply -f /home/vagrant/data/nginx-deployment.yml && kubectl apply -f /home/vagrant/data/nginx-service.yml
+kubectl get services 
+kubectl describe services nginx-service
+
+# ingress
+kubectl get ingress
